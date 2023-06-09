@@ -3,13 +3,13 @@
 
 set(SRC main.cpp
     bench-ntt.cpp
-    bench-eltwise-add-mod.cpp
-    bench-eltwise-cmp-add.cpp
-    bench-eltwise-cmp-sub-mod.cpp
-    bench-eltwise-fma-mod.cpp
-    bench-eltwise-mult-mod.cpp
-    bench-eltwise-sub-mod.cpp
-    bench-eltwise-reduce-mod.cpp
+    # bench-eltwise-add-mod.cpp
+    # bench-eltwise-cmp-add.cpp
+    # bench-eltwise-cmp-sub-mod.cpp
+    # bench-eltwise-fma-mod.cpp
+    # bench-eltwise-mult-mod.cpp
+    # bench-eltwise-sub-mod.cpp
+    # bench-eltwise-reduce-mod.cpp
     )
 
 if (HEXL_EXPERIMENTAL)

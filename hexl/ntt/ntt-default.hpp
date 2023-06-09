@@ -25,15 +25,15 @@ namespace hexl {
 /// @param[in] twice_modulus Twice the modulus, i.e. 2*q represented as 8 64-bit
 /// signed integers in SIMD form
 /// @details See Algorithm 4 of https://arxiv.org/pdf/1205.2926.pdf
-inline void FwdButterflyRadix2(uint64_t* X_r, uint64_t* Y_r,
-                               const uint64_t* X_op, const uint64_t* Y_op,
-                               uint64_t W, uint64_t W_precon, uint64_t modulus,
-                               uint64_t twice_modulus) {
+inline void FwdButterflyRadix2(uint128_t* X_r, uint128_t* Y_r,
+                               const uint128_t* X_op, const uint128_t* Y_op,
+                               uint128_t W, uint128_t W_precon, uint128_t modulus,
+                               uint128_t twice_modulus) {
   HEXL_VLOG(5, "FwdButterflyRadix2");
   HEXL_VLOG(5, "Inputs: X_op " << *X_op << ", Y_op " << *Y_op << ", W " << W
                                << ", modulus " << modulus);
-  uint64_t tx = ReduceMod<2>(*X_op, twice_modulus);
-  uint64_t T = MultiplyModLazy<64>(*Y_op, W, W_precon, modulus);
+  uint128_t tx = ReduceMod<2>(*X_op, twice_modulus);
+  uint128_t T = MultiplyModLazy<128>(*Y_op, W, W_precon, modulus);
   HEXL_VLOG(5, "T " << T);
   *X_r = tx + T;
   *Y_r = tx + twice_modulus - T;
@@ -43,15 +43,15 @@ inline void FwdButterflyRadix2(uint64_t* X_r, uint64_t* Y_r,
 
 // Assume X, Y in [0, n*q) and return X_r, Y_r in [0, (n+2)*q)
 // such that X_r = X_op + WY_op mod q and Y_r = X_op - WY_op mod q
-inline void FwdButterflyRadix4Lazy(uint64_t* X_r, uint64_t* Y_r,
-                                   const uint64_t X_op, const uint64_t Y_op,
-                                   uint64_t W, uint64_t W_precon,
-                                   uint64_t modulus, uint64_t twice_modulus) {
+inline void FwdButterflyRadix4Lazy(uint128_t* X_r, uint128_t* Y_r,
+                                   const uint128_t X_op, const uint128_t Y_op,
+                                   uint128_t W, uint128_t W_precon,
+                                   uint128_t modulus, uint128_t twice_modulus) {
   HEXL_VLOG(3, "FwdButterflyRadix4Lazy");
   HEXL_VLOG(3, "Inputs: X_op " << X_op << ", Y_op " << Y_op << ", W " << W
                                << ", modulus " << modulus);
 
-  uint64_t T = MultiplyModLazy<64>(Y_op, W, W_precon, modulus);
+  uint128_t T = MultiplyModLazy<128>(Y_op, W, W_precon, modulus);
   HEXL_VLOG(3, "T " << T);
   *X_r = X_op + T;
   *Y_r = X_op + twice_modulus - T;
@@ -61,11 +61,11 @@ inline void FwdButterflyRadix4Lazy(uint64_t* X_r, uint64_t* Y_r,
 
 // Assume X0, X1, X2, X3 in [0, 4q) and return X0, X1, X2, X3 in [0, 4q)
 inline void FwdButterflyRadix4(
-    uint64_t* X_r0, uint64_t* X_r1, uint64_t* X_r2, uint64_t* X_r3,
-    const uint64_t* X_op0, const uint64_t* X_op1, const uint64_t* X_op2,
-    const uint64_t* X_op3, uint64_t W1, uint64_t W1_precon, uint64_t W2,
-    uint64_t W2_precon, uint64_t W3, uint64_t W3_precon, uint64_t modulus,
-    uint64_t twice_modulus, uint64_t four_times_modulus) {
+    uint128_t* X_r0, uint128_t* X_r1, uint128_t* X_r2, uint128_t* X_r3,
+    const uint128_t* X_op0, const uint128_t* X_op1, const uint128_t* X_op2,
+    const uint128_t* X_op3, uint128_t W1, uint128_t W1_precon, uint128_t W2,
+    uint128_t W2_precon, uint128_t W3, uint128_t W3_precon, uint128_t modulus,
+    uint128_t twice_modulus, uint128_t four_times_modulus) {
   HEXL_VLOG(3, "FwdButterflyRadix4");
   HEXL_UNUSED(four_times_modulus);
 
@@ -109,30 +109,30 @@ inline void FwdButterflyRadix4(
 /// @param[in] twice_modulus Twice the modulus, i.e. 2*q represented as 8 64-bit
 /// signed integers in SIMD form
 /// @details See Algorithm 3 of https://arxiv.org/pdf/1205.2926.pdf
-inline void InvButterflyRadix2(uint64_t* X_r, uint64_t* Y_r,
-                               const uint64_t* X_op, const uint64_t* Y_op,
-                               uint64_t W, uint64_t W_precon, uint64_t modulus,
-                               uint64_t twice_modulus) {
+inline void InvButterflyRadix2(uint128_t* X_r, uint128_t* Y_r,
+                               const uint128_t* X_op, const uint128_t* Y_op,
+                               uint128_t W, uint128_t W_precon, uint128_t modulus,
+                               uint128_t twice_modulus) {
   HEXL_VLOG(4, "InvButterflyRadix2 X_op "
                    << *X_op << ", Y_op " << *Y_op << " W " << W << " W_precon "
                    << W_precon << " modulus " << modulus);
-  uint64_t tx = *X_op + *Y_op;
+  uint128_t tx = *X_op + *Y_op;
   *Y_r = *X_op + twice_modulus - *Y_op;
   *X_r = ReduceMod<2>(tx, twice_modulus);
-  *Y_r = MultiplyModLazy<64>(*Y_r, W, W_precon, modulus);
+  *Y_r = MultiplyModLazy<128>(*Y_r, W, W_precon, modulus);
 
   HEXL_VLOG(4, "InvButterflyRadix2 returning X_r " << *X_r << ", Y_r " << *Y_r);
 }
 
 // Assume X0, X1, X2, X3 in [0, 2q) and return X0, X1, X2, X3 in [0, 2q)
-inline void InvButterflyRadix4(uint64_t* X_r0, uint64_t* X_r1, uint64_t* X_r2,
-                               uint64_t* X_r3, const uint64_t* X_op0,
-                               const uint64_t* X_op1, const uint64_t* X_op2,
-                               const uint64_t* X_op3, uint64_t W1,
-                               uint64_t W1_precon, uint64_t W2,
-                               uint64_t W2_precon, uint64_t W3,
-                               uint64_t W3_precon, uint64_t modulus,
-                               uint64_t twice_modulus) {
+inline void InvButterflyRadix4(uint128_t* X_r0, uint128_t* X_r1, uint128_t* X_r2,
+                               uint128_t* X_r3, const uint128_t* X_op0,
+                               const uint128_t* X_op1, const uint128_t* X_op2,
+                               const uint128_t* X_op3, uint128_t W1,
+                               uint128_t W1_precon, uint128_t W2,
+                               uint128_t W2_precon, uint128_t W3,
+                               uint128_t W3_precon, uint128_t modulus,
+                               uint128_t twice_modulus) {
   HEXL_VLOG(4, "InvButterflyRadix4 "                               //
                    << "X_op0 " << *X_op0 << ", X_op1 " << *X_op1   //
                    << ", X_op2 " << *X_op2 << " X_op3 " << *X_op3  //

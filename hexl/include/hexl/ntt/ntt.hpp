@@ -51,11 +51,11 @@ class NTT {
   /// calculations
   /// @brief Performs pre-computation necessary for forward and inverse
   /// transforms
-  NTT(uint64_t degree, uint64_t q,
+  NTT(size_t degree, uint128_t q,
       std::shared_ptr<AllocatorBase> alloc_ptr = {});
 
   template <class Allocator, class... AllocatorArgs>
-  NTT(uint64_t degree, uint64_t q, Allocator&& a, AllocatorArgs&&... args)
+  NTT(size_t degree, uint128_t q, Allocator&& a, AllocatorArgs&&... args)
       : NTT(degree, q,
             std::static_pointer_cast<AllocatorBase>(
                 std::make_shared<AllocatorAdapter<Allocator, AllocatorArgs...>>(
@@ -72,11 +72,11 @@ class NTT {
   /// calculations
   /// @details  Performs pre-computation necessary for forward and inverse
   /// transforms
-  NTT(uint64_t degree, uint64_t q, uint64_t root_of_unity,
+  NTT(size_t degree, uint128_t q, uint128_t root_of_unity,
       std::shared_ptr<AllocatorBase> alloc_ptr = {});
 
   template <class Allocator, class... AllocatorArgs>
-  NTT(uint64_t degree, uint64_t q, uint64_t root_of_unity, Allocator&& a,
+  NTT(size_t degree, uint128_t q, uint128_t root_of_unity, Allocator&& a,
       AllocatorArgs&&... args)
       : NTT(degree, q, root_of_unity,
             std::static_pointer_cast<AllocatorBase>(
@@ -87,7 +87,7 @@ class NTT {
   /// @param[in] degree N. Size of the transform, i.e. the polynomial degree.
   /// Must be a power of two.
   /// @param[in] modulus Prime modulus q. Must satisfy q mod 2N = 1
-  static bool CheckArguments(uint64_t degree, uint64_t modulus);
+  static bool CheckArguments(uint128_t degree, uint128_t modulus);
 
   /// @brief Compute forward NTT. Results are bit-reversed.
   /// @param[out] result Stores the result
@@ -96,8 +96,8 @@ class NTT {
   /// input_mod_factor * q). Must be 1, 2 or 4.
   /// @param[in] output_mod_factor Returns output \p result in [0,
   /// output_mod_factor * q). Must be 1 or 4.
-  void ComputeForward(uint64_t* result, const uint64_t* operand,
-                      uint64_t input_mod_factor, uint64_t output_mod_factor);
+  void ComputeForward(uint128_t* result, const uint128_t* operand,
+                      uint128_t input_mod_factor, uint128_t output_mod_factor);
 
   /// Compute inverse NTT. Results are bit-reversed.
   /// @param[out] result Stores the result
@@ -106,101 +106,101 @@ class NTT {
   /// input_mod_factor * q). Must be 1 or 2.
   /// @param[in] output_mod_factor Returns output \p result in [0,
   /// output_mod_factor * q). Must be 1 or 2.
-  void ComputeInverse(uint64_t* result, const uint64_t* operand,
-                      uint64_t input_mod_factor, uint64_t output_mod_factor);
+  void ComputeInverse(uint128_t* result, const uint128_t* operand,
+                      uint128_t input_mod_factor, uint128_t output_mod_factor);
 
   /// @brief Returns the minimal 2N'th root of unity
-  uint64_t GetMinimalRootOfUnity() const { return m_w; }
+  uint128_t GetMinimalRootOfUnity() const { return m_w; }
 
   /// @brief Returns the degree N
-  uint64_t GetDegree() const { return m_degree; }
+  uint128_t GetDegree() const { return m_degree; }
 
   /// @brief Returns the word-sized prime modulus
-  uint64_t GetModulus() const { return m_q; }
+  uint128_t GetModulus() const { return m_q; }
 
   /// @brief Returns the root of unity powers in bit-reversed order
-  const AlignedVector64<uint64_t>& GetRootOfUnityPowers() const {
+  const AlignedVector64<uint128_t>& GetRootOfUnityPowers() const {
     return m_root_of_unity_powers;
   }
 
   /// @brief Returns the root of unity power at bit-reversed index i.
-  uint64_t GetRootOfUnityPower(size_t i) { return GetRootOfUnityPowers()[i]; }
+  uint128_t GetRootOfUnityPower(size_t i) { return GetRootOfUnityPowers()[i]; }
 
   /// @brief Returns 32-bit pre-conditioned root of unity powers in
   /// bit-reversed order
-  const AlignedVector64<uint64_t>& GetPrecon32RootOfUnityPowers() const {
+  const AlignedVector64<uint128_t>& GetPrecon32RootOfUnityPowers() const {
     return m_precon32_root_of_unity_powers;
   }
 
   /// @brief Returns 64-bit pre-conditioned root of unity powers in
   /// bit-reversed order
-  const AlignedVector64<uint64_t>& GetPrecon64RootOfUnityPowers() const {
-    return m_precon64_root_of_unity_powers;
+  const AlignedVector64<uint128_t>& GetPrecon128RootOfUnityPowers() const {
+    return m_precon128_root_of_unity_powers;
   }
 
   /// @brief Returns the root of unity powers in bit-reversed order with
   /// modifications for use by AVX512 implementation
-  const AlignedVector64<uint64_t>& GetAVX512RootOfUnityPowers() const {
+  const AlignedVector64<uint128_t>& GetAVX512RootOfUnityPowers() const {
     return m_avx512_root_of_unity_powers;
   }
 
   /// @brief Returns 32-bit pre-conditioned AVX512 root of unity powers in
   /// bit-reversed order
-  const AlignedVector64<uint64_t>& GetAVX512Precon32RootOfUnityPowers() const {
+  const AlignedVector64<uint128_t>& GetAVX512Precon32RootOfUnityPowers() const {
     return m_avx512_precon32_root_of_unity_powers;
   }
 
   /// @brief Returns 52-bit pre-conditioned AVX512 root of unity powers in
   /// bit-reversed order
-  const AlignedVector64<uint64_t>& GetAVX512Precon52RootOfUnityPowers() const {
+  const AlignedVector64<uint128_t>& GetAVX512Precon52RootOfUnityPowers() const {
     return m_avx512_precon52_root_of_unity_powers;
   }
 
   /// @brief Returns 64-bit pre-conditioned AVX512 root of unity powers in
   /// bit-reversed order
-  const AlignedVector64<uint64_t>& GetAVX512Precon64RootOfUnityPowers() const {
+  const AlignedVector64<uint128_t>& GetAVX512Precon64RootOfUnityPowers() const {
     return m_avx512_precon64_root_of_unity_powers;
   }
 
   /// @brief Returns the inverse root of unity powers in bit-reversed order
-  const AlignedVector64<uint64_t>& GetInvRootOfUnityPowers() const {
+  const AlignedVector64<uint128_t>& GetInvRootOfUnityPowers() const {
     return m_inv_root_of_unity_powers;
   }
 
   /// @brief Returns the inverse root of unity power at bit-reversed index i.
-  uint64_t GetInvRootOfUnityPower(size_t i) {
+  uint128_t GetInvRootOfUnityPower(size_t i) {
     return GetInvRootOfUnityPowers()[i];
   }
 
   /// @brief Returns the vector of 32-bit pre-conditioned pre-computed root of
   /// unity
   // powers for the modulus and root of unity.
-  const AlignedVector64<uint64_t>& GetPrecon32InvRootOfUnityPowers() const {
+  const AlignedVector64<uint128_t>& GetPrecon32InvRootOfUnityPowers() const {
     return m_precon32_inv_root_of_unity_powers;
   }
 
   /// @brief Returns the vector of 52-bit pre-conditioned pre-computed root of
   /// unity
   // powers for the modulus and root of unity.
-  const AlignedVector64<uint64_t>& GetPrecon52InvRootOfUnityPowers() const {
+  const AlignedVector64<uint128_t>& GetPrecon52InvRootOfUnityPowers() const {
     return m_precon52_inv_root_of_unity_powers;
   }
 
   /// @brief Returns the vector of 64-bit pre-conditioned pre-computed root of
   /// unity
   // powers for the modulus and root of unity.
-  const AlignedVector64<uint64_t>& GetPrecon64InvRootOfUnityPowers() const {
-    return m_precon64_inv_root_of_unity_powers;
+  const AlignedVector64<uint128_t>& GetPrecon128InvRootOfUnityPowers() const {
+    return m_precon128_inv_root_of_unity_powers;
   }
 
   /// @brief Maximum power of 2 in degree
   static size_t MaxDegreeBits() { return 20; }
 
   /// @brief Maximum number of bits in modulus;
-  static size_t MaxModulusBits() { return 62; }
+  static size_t MaxModulusBits() { return 126; }
 
   /// @brief Default bit shift used in Barrett precomputation
-  static const size_t s_default_shift_bits{64};
+  static const size_t s_default_shift_bits{128};
 
   /// @brief Bit shift used in Barrett precomputation when AVX512-IFMA
   /// acceleration is enabled
@@ -224,14 +224,14 @@ class NTT {
 
   /// @brief Maximum modulus to use AVX512-DQ acceleration for the inverse
   /// transform
-  static const size_t s_max_inv_dq_modulus{1ULL << (s_default_shift_bits - 2)};
+  static const size_t s_max_inv_dq_modulus{1ULL << (64 - 2)};
 
   static size_t s_max_fwd_modulus(int bit_shift) {
     if (bit_shift == 32) {
       return s_max_fwd_32_modulus;
     } else if (bit_shift == 52) {
       return s_max_fwd_ifma_modulus;
-    } else if (bit_shift == 64) {
+    } else if (bit_shift == 128) {
       return 1ULL << MaxModulusBits();
     }
     HEXL_CHECK(false, "Invalid bit_shift " << bit_shift);
@@ -243,7 +243,7 @@ class NTT {
       return s_max_inv_32_modulus;
     } else if (bit_shift == 52) {
       return s_max_inv_ifma_modulus;
-    } else if (bit_shift == 64) {
+    } else if (bit_shift == 128) {
       return 1ULL << MaxModulusBits();
     }
     HEXL_CHECK(false, "Invalid bit_shift " << bit_shift);
@@ -253,43 +253,43 @@ class NTT {
  private:
   void ComputeRootOfUnityPowers();
 
-  uint64_t m_degree;  // N: size of NTT transform, should be power of 2
-  uint64_t m_q;       // prime modulus. Must satisfy q == 1 mod 2n
+  size_t m_degree;  // N: size of NTT transform, should be power of 2
+  uint128_t m_q;       // prime modulus. Must satisfy q == 1 mod 2n
 
-  uint64_t m_degree_bits;  // log_2(m_degree)
+  size_t m_degree_bits;  // log_2(m_degree)
 
-  uint64_t m_w_inv;  // Inverse of minimal root of unity
-  uint64_t m_w;      // A 2N'th root of unity
+  uint128_t m_w_inv;  // Inverse of minimal root of unity
+  uint128_t m_w;      // A 2N'th root of unity
 
   std::shared_ptr<AllocatorBase> m_alloc;
 
-  AlignedAllocator<uint64_t, 64> m_aligned_alloc;
+  AlignedAllocator<uint128_t, 64> m_aligned_alloc;
 
   // powers of the minimal root of unity
-  AlignedVector64<uint64_t> m_root_of_unity_powers;
+  AlignedVector64<uint128_t> m_root_of_unity_powers;
   // vector of floor(W * 2**32 / m_q), with W the root of unity powers
-  AlignedVector64<uint64_t> m_precon32_root_of_unity_powers;
+  AlignedVector64<uint128_t> m_precon32_root_of_unity_powers;
   // vector of floor(W * 2**64 / m_q), with W the root of unity powers
-  AlignedVector64<uint64_t> m_precon64_root_of_unity_powers;
+  AlignedVector64<uint128_t> m_precon128_root_of_unity_powers;
 
   // powers of the minimal root of unity adjusted for use in AVX512
   // implementations
-  AlignedVector64<uint64_t> m_avx512_root_of_unity_powers;
+  AlignedVector64<uint128_t> m_avx512_root_of_unity_powers;
   // vector of floor(W * 2**32 / m_q), with W the AVX512 root of unity powers
-  AlignedVector64<uint64_t> m_avx512_precon32_root_of_unity_powers;
+  AlignedVector64<uint128_t> m_avx512_precon32_root_of_unity_powers;
   // vector of floor(W * 2**52 / m_q), with W the AVX512 root of unity powers
-  AlignedVector64<uint64_t> m_avx512_precon52_root_of_unity_powers;
+  AlignedVector64<uint128_t> m_avx512_precon52_root_of_unity_powers;
   // vector of floor(W * 2**64 / m_q), with W the AVX512 root of unity powers
-  AlignedVector64<uint64_t> m_avx512_precon64_root_of_unity_powers;
+  AlignedVector64<uint128_t> m_avx512_precon64_root_of_unity_powers;
 
   // vector of floor(W * 2**32 / m_q), with W the inverse root of unity powers
-  AlignedVector64<uint64_t> m_precon32_inv_root_of_unity_powers;
+  AlignedVector64<uint128_t> m_precon32_inv_root_of_unity_powers;
   // vector of floor(W * 2**52 / m_q), with W the inverse root of unity powers
-  AlignedVector64<uint64_t> m_precon52_inv_root_of_unity_powers;
+  AlignedVector64<uint128_t> m_precon52_inv_root_of_unity_powers;
   // vector of floor(W * 2**64 / m_q), with W the inverse root of unity powers
-  AlignedVector64<uint64_t> m_precon64_inv_root_of_unity_powers;
+  AlignedVector64<uint128_t> m_precon128_inv_root_of_unity_powers;
 
-  AlignedVector64<uint64_t> m_inv_root_of_unity_powers;
+  AlignedVector64<uint128_t> m_inv_root_of_unity_powers;
 };
 
 }  // namespace hexl

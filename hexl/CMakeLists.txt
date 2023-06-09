@@ -2,16 +2,16 @@
 # SPDX-License-Identifier: Apache-2.0
 
 set(NATIVE_SRC
-    eltwise/eltwise-mult-mod.cpp
-    eltwise/eltwise-reduce-mod.cpp
-    eltwise/eltwise-sub-mod.cpp
-    eltwise/eltwise-add-mod.cpp
-    eltwise/eltwise-fma-mod.cpp
-    eltwise/eltwise-cmp-add.cpp
-    eltwise/eltwise-cmp-sub-mod.cpp
+    # eltwise/eltwise-mult-mod.cpp
+    # eltwise/eltwise-reduce-mod.cpp
+    # eltwise/eltwise-sub-mod.cpp
+    # eltwise/eltwise-add-mod.cpp
+    # eltwise/eltwise-fma-mod.cpp
+    # eltwise/eltwise-cmp-add.cpp
+    # eltwise/eltwise-cmp-sub-mod.cpp
     ntt/ntt-internal.cpp
     ntt/ntt-radix-2.cpp
-    ntt/ntt-radix-4.cpp
+    # ntt/ntt-radix-4.cpp
     number-theory/number-theory.cpp
 )
 

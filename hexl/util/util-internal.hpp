@@ -10,6 +10,8 @@
 #include "hexl/util/aligned-allocator.hpp"
 #include "hexl/util/util.hpp"
 
+#include <boost/random/uniform_int_distribution.hpp>
+
 namespace intel {
 namespace hexl {
 
@@ -60,13 +62,13 @@ inline double GenerateInsecureUniformRealRandomValue(double min_value,
 /// max_value)
 /// NOTE: this function is not a cryptographically secure random number
 /// generator and should be used for testing/benchmarking only
-inline uint64_t GenerateInsecureUniformIntRandomValue(uint64_t min_value,
-                                                      uint64_t max_value) {
+inline uint128_t GenerateInsecureUniformIntRandomValue(uint128_t min_value,
+                                                      uint128_t max_value) {
   HEXL_CHECK(min_value < max_value, "min_value must be > max_value");
 
   static std::random_device rd;
   static std::mt19937 mersenne_engine(rd());
-  std::uniform_int_distribution<uint64_t> distrib(min_value, max_value - 1);
+  boost::random::uniform_int_distribution<uint128_t> distrib(min_value, max_value - 1);
   return distrib(mersenne_engine);
 }
 
@@ -88,9 +90,9 @@ inline AlignedVector64<double> GenerateInsecureUniformRealRandomValues(
 /// max_value)
 /// NOTE: this function is not a cryptographically secure random
 /// number generator and should be used for testing/benchmarking only
-inline AlignedVector64<uint64_t> GenerateInsecureUniformIntRandomValues(
-    uint64_t size, uint64_t min_value, uint64_t max_value) {
-  AlignedVector64<uint64_t> values(size);
+inline AlignedVector64<uint128_t> GenerateInsecureUniformIntRandomValues(
+    uint64_t size, uint128_t min_value, uint128_t max_value) {
+  AlignedVector64<uint128_t> values(size);
   auto generator = [&]() {
     return GenerateInsecureUniformIntRandomValue(min_value, max_value);
   };
